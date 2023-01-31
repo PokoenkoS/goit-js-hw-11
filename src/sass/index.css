@@ -1,0 +1,9 @@
+@import '~node_modules/modern-normalize/modern-normalize.css';
+body {
+  background-color: blue;
+}
+
+.search-form {
+  margin-left: 50%;
+  margin-right: 50%;
+}/*# sourceMappingURL=index.css.map */
