@@ -10,3 +10,11 @@ body {
     flex-direction: column;
     width: 300 px;
 }
+.gallery {
+    display: flex;
+    flex-wrap: wrap;
+}
+.info-item {
+    display: flex;
+    width: 10px
+}
