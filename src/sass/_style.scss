@@ -8,13 +8,22 @@ body {
 .photo-card {
     display: flex;
     flex-direction: column;
-    width: 300 px;
+    width: 350px;
+    margin: 10px;
 }
 .gallery {
     display: flex;
     flex-wrap: wrap;
+    justify-content: space-between;
 }
 .info-item {
+    // display: flex;
+    // width: 10px
+}
+.load-more {
+    margin-left: 45%;
+}
+.info {
     display: flex;
-    width: 10px
+    justify-content: space-between;
 }
