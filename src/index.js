@@ -1,5 +1,7 @@
 import axios from "axios";
 import Notiflix from 'notiflix';
+import SimpleLightbox from "simplelightbox";
+import "simplelightbox/dist/simple-lightbox.min.css";
 
 const BASE_URL = `https://pixabay.com/api/`
 const API_KEY = `33261865-905999929b5f445e8a29b592f`;
@@ -59,7 +61,7 @@ async function createMarkup(picture) {
     
     const cardList = await picture.reduce((acc, {webformatURL, tags, likes, views, comments, downloads}) => {
     return acc + `<div class="photo-card">
-      <img src=${webformatURL} alt=${tags} height = 250 loading="lazy" />
+     <a href=""> <img src=${webformatURL} alt=${tags} height = 250 loading="lazy" /></a>
       <div class="info">
         <p class="info-item">
           <b>Likes: ${likes}</b>
