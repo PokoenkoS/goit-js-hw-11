@@ -1,6 +1,7 @@
 import axios from "axios";
 import Notiflix from 'notiflix';
 
+const BASE_URL = `https://pixabay.com/api/`
 const API_KEY = `33261865-905999929b5f445e8a29b592f`;
 const form = document.querySelector(`.search-form`);
 const container = document.querySelector(`.gallery`);
@@ -13,13 +14,6 @@ loadBtn.hidden = true;
 form.addEventListener(`submit`, onSubmit);
 loadBtn.addEventListener(`click`, onLoadMore);
 
-
-function fetchPhoto (name) {
-    const url = axios.get(`https://pixabay.com/api/?key=${API_KEY}&q=${name}&orientation=horizontal&safesearch=true&image_type=photo&page=${queryPage}&per_page=40`);
-    
-    return url;
-   }
-  
  function onSubmit(e) {
     e.preventDefault();
     loadBtn.hidden = true;
@@ -31,10 +25,13 @@ function fetchPhoto (name) {
     queryPage = 1;      
     fetchPhoto(inputValue)
     .then((res) => {
-        console.log(res);
-        if (res.data.hits.length ===0){
-            Notiflix.Notify.warning('Sorry, there are no images matching your search query. Please try again.')
-        }
+     
+        if (res.data.hits.length === 0){
+            Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.')
+            return;
+        } 
+        
+        Notiflix.Notify.success(`Hooray! We found ${res.data.totalHits} images.`)
         createMarkup(res.data.hits)
         loadBtn.hidden = false;
      })
@@ -47,20 +44,28 @@ function onLoadMore() {
     queryPage += 1;
     inputValue = form.elements.searchQuery.value.trim();
     fetchPhoto(inputValue)
-    .then((res) => createMarkup(res.data.hits))
+    .then((res) => {
+        console.log(res);
+        // if (res.data.hits.length === 0){
+        //     loadBtn.hidden = true;
+        //     Notiflix.Notify.warning(`We're sorry, but you've reached the end of search results.`)
+        // }
+        createMarkup(res.data.hits)})
     .catch(error => {
-   
+        Notiflix.Notify.warning(`We're sorry, but you've reached the end of search results.`)
+    
     })
 }
 
-function clearForm() {
-    container.innerHTML = '';
-   
-}
-
-function createMarkup(picture) {
+async function fetchPhoto (name) {
+    const url = await axios.get(`${BASE_URL}?key=${API_KEY}&q=${name}&orientation=horizontal&safesearch=true&image_type=photo&page=${queryPage}&per_page=40`);
     
-    const cardList = picture.reduce((acc, {webformatURL, tags, likes, views, comments, downloads}) => {
+    return url;
+   }
+
+async function createMarkup(picture) {
+    
+    const cardList = await picture.reduce((acc, {webformatURL, tags, likes, views, comments, downloads}) => {
     return acc + `<div class="photo-card">
       <img src=${webformatURL} alt=${tags} height = 250 loading="lazy" />
       <div class="info">
@@ -81,4 +86,8 @@ function createMarkup(picture) {
  },"" )
 
  return container.insertAdjacentHTML(`beforeend`, cardList);
+ }
+
+ function clearForm() {
+    container.innerHTML = '';
  }

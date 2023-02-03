@@ -2,8 +2,9 @@ body {
    
 }
 .search-form {
-    margin-left: 40%;
-    
+
+    background-color: blue;
+    padding-left: 40%;
 }
 .photo-card {
     display: flex;
@@ -17,11 +18,17 @@ body {
     justify-content: space-between;
 }
 .info-item {
-    // display: flex;
-    // width: 10px
+    
+    text-align: center;
 }
 .load-more {
     margin-left: 45%;
+    border-radius: 2px;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    padding: 10px 20px;
+    background-color: rgba(45, 45, 233, 0.731);
 }
 .info {
     display: flex;
