@@ -50,7 +50,7 @@ function onLoadMore() {
 }
 
 async function fetchPhoto (name) {
-    const url = await axios.get(`${BASE_URL}?key=${API_KEY}&q=${name}&orientation=horizontal&safesearch=true&image_type=photo&page=${queryPage}&per_page=200`);
+    const url = await axios.get(`${BASE_URL}?key=${API_KEY}&q=${name}&orientation=horizontal&safesearch=true&image_type=photo&page=${queryPage}&per_page=40`);
     
     return url;
    }
