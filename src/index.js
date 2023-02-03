@@ -35,9 +35,6 @@ loadBtn.addEventListener(`click`, onLoadMore);
         createMarkup(res.data.hits)
         loadBtn.hidden = false;
      })
-    .catch(error => {
-   
-    })
    };
 
 function onLoadMore() {
@@ -45,20 +42,15 @@ function onLoadMore() {
     inputValue = form.elements.searchQuery.value.trim();
     fetchPhoto(inputValue)
     .then((res) => {
-        console.log(res);
-        // if (res.data.hits.length === 0){
-        //     loadBtn.hidden = true;
-        //     Notiflix.Notify.warning(`We're sorry, but you've reached the end of search results.`)
-        // }
-        createMarkup(res.data.hits)})
+      createMarkup(res.data.hits)})
     .catch(error => {
+        loadBtn.hidden = true;
         Notiflix.Notify.warning(`We're sorry, but you've reached the end of search results.`)
-    
     })
 }
 
 async function fetchPhoto (name) {
-    const url = await axios.get(`${BASE_URL}?key=${API_KEY}&q=${name}&orientation=horizontal&safesearch=true&image_type=photo&page=${queryPage}&per_page=40`);
+    const url = await axios.get(`${BASE_URL}?key=${API_KEY}&q=${name}&orientation=horizontal&safesearch=true&image_type=photo&page=${queryPage}&per_page=200`);
     
     return url;
    }
