@@ -10,6 +10,10 @@ const container = document.querySelector(`.gallery`);
 const loadBtn = document.querySelector(`.load-more`);
 let queryPage = 1;
 let inputValue = "";
+var lightbox = new SimpleLightbox('.gallery a', {
+    captionDelay: 250,
+    captionsData: 'alt',
+    } );
 
 loadBtn.hidden = true;
 
@@ -44,7 +48,10 @@ function onLoadMore() {
     inputValue = form.elements.searchQuery.value.trim();
     fetchPhoto(inputValue)
     .then((res) => {
-      createMarkup(res.data.hits)})
+      createMarkup(res.data.hits)
+      .then(res => refresh(res));
+    
+    })
     .catch(error => {
         loadBtn.hidden = true;
         Notiflix.Notify.warning(`We're sorry, but you've reached the end of search results.`)
@@ -59,9 +66,9 @@ async function fetchPhoto (name) {
 
 async function createMarkup(picture) {
     
-    const cardList = await picture.reduce((acc, {webformatURL, tags, likes, views, comments, downloads}) => {
+    const cardList = await picture.reduce((acc, {webformatURL, largeImageURL, tags, likes, views, comments, downloads}) => {
     return acc + `<div class="photo-card">
-     <a href=""> <img src=${webformatURL} alt=${tags} height = 250 loading="lazy" /></a>
+     <a href="${webformatURL}"> <img src=${largeImageURL} alt=${tags} height = 250 loading="lazy" /></a>
       <div class="info">
         <p class="info-item">
           <b>Likes: ${likes}</b>
@@ -84,4 +91,4 @@ async function createMarkup(picture) {
 
  function clearForm() {
     container.innerHTML = '';
- }
+ };
