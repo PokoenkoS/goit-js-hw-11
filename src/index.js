@@ -10,7 +10,7 @@ const container = document.querySelector(`.gallery`);
 const loadBtn = document.querySelector(`.load-more`);
 let queryPage = 1;
 let inputValue = "";
-var lightbox = new SimpleLightbox('.gallery a', {
+let lightbox = new SimpleLightbox('.gallery a', {
     captionDelay: 250,
     captionsData: 'alt',
     } );
@@ -40,6 +40,7 @@ loadBtn.addEventListener(`click`, onLoadMore);
         Notiflix.Notify.success(`Hooray! We found ${res.data.totalHits} images.`)
         createMarkup(res.data.hits)
         loadBtn.hidden = false;
+        lightbox.refresh()
      })
    };
 
@@ -48,8 +49,8 @@ function onLoadMore() {
     inputValue = form.elements.searchQuery.value.trim();
     fetchPhoto(inputValue)
     .then((res) => {
-      createMarkup(res.data.hits)
-      .then(res => refresh(res));
+      createMarkup(res.data.hits);
+      lightbox.refresh();
     
     })
     .catch(error => {
