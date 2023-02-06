@@ -12,7 +12,7 @@ let queryPage = 1;
 let inputValue = "";
 let lightbox = new SimpleLightbox('.gallery a', {
     captionDelay: 250,
-    captionsData: 'alt',
+    captionsData: 'alt'
     } );
 
 loadBtn.hidden = true;
@@ -20,44 +20,50 @@ loadBtn.hidden = true;
 form.addEventListener(`submit`, onSubmit);
 loadBtn.addEventListener(`click`, onLoadMore);
 
- function onSubmit(e) {
-    e.preventDefault();
-    loadBtn.hidden = true;
-    clearForm();
-   
-    const form = e.currentTarget;
-    inputValue = form.elements.searchQuery.value.trim();
-   
-    queryPage = 1;      
-    fetchPhoto(inputValue)
-    .then((res) => {
+async function onSubmit(e) {
+        e.preventDefault();
+        queryPage = 1;
+    
+        loadBtn.hidden = true;
+        clearForm();
+              
+        const form = e.currentTarget;
+        inputValue = form.elements.searchQuery.value.trim();
+              
+        try {
+       const response = await fetchPhoto(inputValue);
      
-        if (res.data.hits.length === 0){
-            Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.')
-            return;
-        } 
-        
-        Notiflix.Notify.success(`Hooray! We found ${res.data.totalHits} images.`)
-        createMarkup(res.data.hits)
-        loadBtn.hidden = false;
-        lightbox.refresh()
-     })
-   };
+    if (response.data.hits.length === 0) { 
+         Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.')
+         return;
+}
 
-function onLoadMore() {
+    Notiflix.Notify.success(`Hooray! We found ${response.data.totalHits} images.`);     
+    loadBtn.hidden = false;
+      createMarkup(response.data.hits);
+      lightbox.refresh();
+                      
+    } catch (err){
+        console.log(err);
+  }
+}
+
+async function onLoadMore() {
     queryPage += 1;
     inputValue = form.elements.searchQuery.value.trim();
-    fetchPhoto(inputValue)
-    .then((res) => {
-      createMarkup(res.data.hits);
-      lightbox.refresh();
-    
-    })
-    .catch(error => {
+  try {
+    const response = await fetchPhoto(inputValue);
+    Notiflix.Notify.success(`Hooray! We found ${response.data.totalHits} images.`);  
+    createMarkup(response.data.hits);
+    lightbox.refresh();
+  }   
+  catch(err) {
+        console.log(err);
         loadBtn.hidden = true;
         Notiflix.Notify.warning(`We're sorry, but you've reached the end of search results.`)
-    })
-}
+    }
+      
+    }
 
 async function fetchPhoto (name) {
     const url = await axios.get(`${BASE_URL}?key=${API_KEY}&q=${name}&orientation=horizontal&safesearch=true&image_type=photo&page=${queryPage}&per_page=40`);
@@ -65,11 +71,11 @@ async function fetchPhoto (name) {
     return url;
    }
 
-async function createMarkup(picture) {
-    
-    const cardList = await picture.reduce((acc, {webformatURL, largeImageURL, tags, likes, views, comments, downloads}) => {
+ function createMarkup(picture) {
+      
+   const cardList = picture.reduce((acc, {webformatURL, largeImageURL, tags, likes, views, comments, downloads}) => {
     return acc + `<div class="photo-card">
-     <a href="${webformatURL}"> <img src=${largeImageURL} alt=${tags} height = 250 loading="lazy" /></a>
+     <a href="${largeImageURL}"> <img src=${ webformatURL} alt=${tags} height = 250 loading="lazy" /></a>
       <div class="info">
         <p class="info-item">
           <b>Likes: ${likes}</b>
@@ -87,9 +93,12 @@ async function createMarkup(picture) {
     </div> `
  },"" )
 
- return container.insertAdjacentHTML(`beforeend`, cardList);
+ container.insertAdjacentHTML(`beforeend`, cardList);
+
  }
 
  function clearForm() {
     container.innerHTML = '';
  };
+
+
