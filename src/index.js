@@ -2,9 +2,9 @@ import axios from "axios";
 import Notiflix from 'notiflix';
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
+import fetchPhoto from "./API";
 
-const BASE_URL = `https://pixabay.com/api/`
-const API_KEY = `33261865-905999929b5f445e8a29b592f`;
+
 const form = document.querySelector(`.search-form`);
 const container = document.querySelector(`.gallery`);
 const loadBtn = document.querySelector(`.load-more`);
@@ -34,6 +34,7 @@ async function onSubmit(e) {
        const response = await fetchPhoto(inputValue);
      
     if (response.data.hits.length === 0) { 
+      loadBtn.hidden = true;
          Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.')
          return;
 }
@@ -65,11 +66,7 @@ async function onLoadMore() {
       
     }
 
-async function fetchPhoto (name) {
-    const url = await axios.get(`${BASE_URL}?key=${API_KEY}&q=${name}&orientation=horizontal&safesearch=true&image_type=photo&page=${queryPage}&per_page=40`);
-    
-    return url;
-   }
+
 
  function createMarkup(picture) {
       
