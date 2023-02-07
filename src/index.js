@@ -66,7 +66,7 @@ async function onLoadMore(e) {
       loadBtn.hidden = true;
       Notiflix.Notify.info('Were sorry, but you ve reached the end of search results.');
       
-      clearForm();
+      // clearForm();
       lightbox.refresh();
     }
   }   
