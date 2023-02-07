@@ -60,8 +60,9 @@ async function onLoadMore(e) {
     Notiflix.Notify.success(`Hooray! We found ${response.data.totalHits} images.`);  
       
 
-    const count = response.data.totalHits / per_page;
-    if (queryPage > count) {
+    // const count = response.data.totalHits ;
+    console.log(response.data.hits.length);
+    if (response.data.hits.length <= 0) {
       loadBtn.hidden = true;
       Notiflix.Notify.info('Were sorry, but you ve reached the end of search results.');
       
