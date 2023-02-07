@@ -1,14 +1,13 @@
-import axios from "axios";
+
 import Notiflix from 'notiflix';
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 import fetchPhoto from "./API";
 
-
 const form = document.querySelector(`.search-form`);
 const container = document.querySelector(`.gallery`);
 const loadBtn = document.querySelector(`.load-more`);
-let queryPage = 1;
+let queryPage;
 let inputValue = "";
 let lightbox = new SimpleLightbox('.gallery a', {
     captionDelay: 250,
@@ -32,7 +31,7 @@ async function onSubmit(e) {
               
         try {
        const response = await fetchPhoto(inputValue);
-     
+      
     if (response.data.hits.length === 0) { 
       loadBtn.hidden = true;
          Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.')
@@ -50,10 +49,10 @@ async function onSubmit(e) {
 }
 
 async function onLoadMore() {
-    queryPage += 1;
+   
     inputValue = form.elements.searchQuery.value.trim();
   try {
-    const response = await fetchPhoto(inputValue);
+    const response = await fetchPhoto(inputValue, queryPage += 1);
     Notiflix.Notify.success(`Hooray! We found ${response.data.totalHits} images.`);  
     createMarkup(response.data.hits);
     lightbox.refresh();
@@ -65,7 +64,6 @@ async function onLoadMore() {
     }
       
     }
-
 
 
  function createMarkup(picture) {
