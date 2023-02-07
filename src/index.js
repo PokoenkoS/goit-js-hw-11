@@ -8,6 +8,7 @@ const form = document.querySelector(`.search-form`);
 const container = document.querySelector(`.gallery`);
 const loadBtn = document.querySelector(`.load-more`);
 let queryPage;
+const per_page = 40;
 let inputValue = "";
 let lightbox = new SimpleLightbox('.gallery a', {
     captionDelay: 250,
@@ -48,19 +49,30 @@ async function onSubmit(e) {
   }
 }
 
-async function onLoadMore() {
-   
+async function onLoadMore(e) {
+  queryPage += 1;
+
     inputValue = form.elements.searchQuery.value.trim();
   try {
-    const response = await fetchPhoto(inputValue, queryPage += 1);
-    Notiflix.Notify.success(`Hooray! We found ${response.data.totalHits} images.`);  
+
+    const response = await fetchPhoto(inputValue, queryPage);
     createMarkup(response.data.hits);
-    lightbox.refresh();
+    Notiflix.Notify.success(`Hooray! We found ${response.data.totalHits} images.`);  
+      
+
+    const count = response.data.totalHits / per_page;
+    if (queryPage > count) {
+      loadBtn.hidden = true;
+      Notiflix.Notify.info('Were sorry, but you ve reached the end of search results.');
+      
+      clearForm();
+      lightbox.refresh();
+    }
   }   
   catch(err) {
         console.log(err);
-        loadBtn.hidden = true;
-        Notiflix.Notify.warning(`We're sorry, but you've reached the end of search results.`)
+        // loadBtn.hidden = true;
+        // Notiflix.Notify.warning(`We're sorry, but you've reached the end of search results.`)
     }
       
     }
